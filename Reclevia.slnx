@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Reclevia.Api/Reclevia.Api.csproj" />
+  <Project Path="src/Reclevia.Core/Reclevia.Core.csproj" />
+  <Project Path="tests/Reclevia.IntegrationTests/Reclevia.IntegrationTests.csproj" />
+  <Project Path="tests/Reclevia.UnitTests/Reclevia.UnitTests.csproj" />
+</Solution>
