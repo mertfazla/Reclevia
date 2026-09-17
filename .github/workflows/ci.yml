@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: reclevia_tests
+          POSTGRES_USER: reclevia_test
+          POSTGRES_PASSWORD: reclevia_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U reclevia_test -d reclevia_tests"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ConnectionStrings__RecleviaTests: Host=localhost;Port=5432;Database=reclevia_tests;Username=reclevia_test;Password=reclevia_test_password
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.401"
+
+      - name: Restore
+        run: dotnet restore Reclevia.slnx
+
+      - name: Build
+        run: dotnet build Reclevia.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Reclevia.slnx --configuration Release --no-build
