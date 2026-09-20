@@ -1,0 +1,15 @@
+{
+  "csharp.experimental.debug.hotReload": true,
+"csharp.debug.hotReloadOnSave": true,
+"files.exclude": {
+    "**/*.csproj.user": true,
+    "**/obj": true,
+    "**/bin": true,
+    "**/.vs": true
+},
+"C_Cpp.files.exclude": {
+
+    "**/.vscode": true,
+    "**/.vs": true
+}
+}
