@@ -1,8 +1,10 @@
 using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Reclevia.Api.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Reclevia.Api.Health;
+using Reclevia.Api.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,17 @@ builder.Services.AddDbContext<RecleviaDbContext>(options =>
 
     options.UseNpgsql(connectionString);
 });
+builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<RecleviaDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 
@@ -35,6 +48,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health", new HealthCheckOptions
